@@ -1,0 +1,54 @@
+CREATE TABLE Guest (
+    Guest_id INT PRIMARY KEY,
+    Full_Name VARCHAR(100) NOT NULL,
+    Guest_Phone VARCHAR(20),
+    Guest_Email VARCHAR(100),
+    Address VARCHAR(255),
+    Nationality VARCHAR(50),
+    ID_Document_Number VARCHAR(50)
+);
+
+CREATE TABLE Room (
+    Room_ID INT PRIMARY KEY,
+    Room_Number VARCHAR(10) NOT NULL,
+    Room_Type VARCHAR(50),
+    Bed_Type VARCHAR(50),
+    Room_Status VARCHAR(20),
+    Price_Per_Night DECIMAL(10, 2)
+);
+
+CREATE TABLE Receptionist (
+    Receptionist_ID INT PRIMARY KEY,
+    Full_Name VARCHAR(100) NOT NULL,
+    Receptionist_Email VARCHAR(100),
+    Receptionist_Phone VARCHAR(20),
+    Username VARCHAR(50) UNIQUE NOT NULL,
+    Pass VARCHAR(255) NOT NULL,
+    Created_At DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Booking (
+    Booking_ID INT PRIMARY KEY,
+    Guest_id INT NOT NULL,
+    Room_ID INT NOT NULL,
+    Receptionist_ID INT,
+    CheckIn_Date DATE NOT NULL,
+    CheckOut_Date DATE NOT NULL,
+    Number_of_Nights INT,
+    Number_of_Guests INT,
+    Booking_Status VARCHAR(20),
+    Total_Price DECIMAL(10, 2),
+    FOREIGN KEY (Guest_id) REFERENCES Guest(Guest_id),
+    FOREIGN KEY (Room_ID) REFERENCES Room(Room_ID),
+    FOREIGN KEY (Receptionist_ID) REFERENCES Receptionist(Receptionist_ID)
+);
+
+CREATE TABLE Payment (
+    Payment_ID INT PRIMARY KEY,
+    Booking_ID INT NOT NULL,
+    Amount_Paid DECIMAL(10, 2),
+    Payment_Date DATE,
+    Payment_Method VARCHAR(50),
+    Payment_Status VARCHAR(20),
+    FOREIGN KEY (Booking_ID) REFERENCES Booking(Booking_ID)
+);
