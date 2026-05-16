@@ -1,0 +1,630 @@
+
+
+
+ <!DOCTYPE html>
+ <html lang="ar" dir="ltr">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Hotel Booking System</title>
+     <link rel="stylesheet" href="https:cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+     <style>
+         * {
+             margin: 0;
+             padding: 0;
+             box-sizing: border-box;
+         }
+
+         body {
+             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+             min-height: 100vh;
+             padding: 20px;
+         }
+
+         .container {
+             max-width: 1200px;
+             margin: 0 auto;
+         }
+
+         .header {
+             text-align: center;
+             color: white;
+             margin-bottom: 40px;
+             animation: fadeInDown 0.8s ease;
+         }
+
+         .header h1 {
+             font-size: 2.5em;
+             margin-bottom: 10px;
+             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+         }
+
+         .tabs {
+             display: flex;
+             gap: 10px;
+             margin-bottom: 30px;
+             flex-wrap: wrap;
+             justify-content: center;
+         }
+
+         .tab-btn {
+             padding: 15px 30px;
+             background: rgba(255,255,255,0.2);
+             color: white;
+             border: 2px solid rgba(255,255,255,0.3);
+             border-radius: 50px;
+             cursor: pointer;
+             font-size: 16px;
+             font-weight: 600;
+             transition: all 0.3s ease;
+             backdrop-filter: blur(10px);
+         }
+
+         .tab-btn:hover {
+             background: rgba(255,255,255,0.3);
+             transform: translateY(-2px);
+         }
+
+         .tab-btn.active {
+             background: white;
+             color: #667eea;
+             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+         }
+
+         .form-container {
+             display: none;
+             animation: fadeIn 0.5s ease;
+         }
+
+         .form-container.active {
+             display: block;
+         }
+
+         .form-card {
+             background: white;
+             border-radius: 20px;
+             padding: 40px;
+             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+             animation: slideUp 0.6s ease;
+         }
+
+         .form-title {
+             font-size: 2em;
+             color: #667eea;
+             margin-bottom: 30px;
+             text-align: center;
+             position: relative;
+             padding-bottom: 15px;
+         }
+
+         .form-title::after {
+             content: '';
+             position: absolute;
+             bottom: 0;
+             left: 50%;
+             transform: translateX(-50%);
+             width: 60px;
+             height: 4px;
+             background: linear-gradient(90deg, #667eea, #764ba2);
+             border-radius: 2px;
+         }
+
+         .form-grid {
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+             gap: 25px;
+             margin-bottom: 30px;
+         }
+
+         .form-group {
+             position: relative;
+         }
+
+         .form-group.full-width {
+             grid-column: 1 / -1;
+         }
+
+         .form-label {
+             display: block;
+             margin-bottom: 8px;
+             color: #333;
+             font-weight: 600;
+             font-size: 14px;
+         }
+
+         .form-input,
+         .form-select {
+             width: 100%;
+             padding: 14px 18px;
+             border: 2px solid #e0e0e0;
+             border-radius: 12px;
+             font-size: 15px;
+             transition: all 0.3s ease;
+             background: #f8f9fa;
+         }
+
+         .form-input:focus,
+         .form-select:focus {
+             outline: none;
+             border-color: #667eea;
+             background: white;
+             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+         }
+
+         .btn-group {
+             display: flex;
+             gap: 15px;
+             justify-content: center;
+             margin-top: 30px;
+         }
+
+         .btn {
+             padding: 15px 40px;
+             border: none;
+             border-radius: 12px;
+             font-size: 16px;
+             font-weight: 600;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             text-transform: uppercase;
+             letter-spacing: 1px;
+             display: inline-flex;
+             align-items: center;
+             gap: 8px;
+         }
+
+         .btn-primary {
+             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+             color: white;
+             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+         }
+
+         .btn-primary:hover {
+             transform: translateY(-3px);
+             box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
+         }
+
+         .btn-secondary {
+             background: #f0f0f0;
+             color: #666;
+         }
+
+         .btn-secondary:hover {
+             background: #e0e0e0;
+         }
+
+         .btn-danger {
+             background: #dc3545;
+             color: white;
+         }
+
+         .btn-danger:hover {
+             background: #c82333;
+             transform: translateY(-2px);
+         }
+
+         .help {
+             margin-top: 15px;
+             padding: 12px;
+             background: #fff3cd;
+             border-left: 4px solid #ffc107;
+             border-radius: 8px;
+             font-size: 13px;
+             color: #856404;
+         }
+
+         .required {
+             color: #e74c3c;
+             margin-left: 3px;
+         }
+
+         @keyframes fadeIn {
+             from { opacity: 0; }
+             to { opacity: 1; }
+         }
+
+         @keyframes fadeInDown {
+             from {
+                 opacity: 0;
+                 transform: translateY(-30px);
+             }
+             to {
+                 opacity: 1;
+                 transform: translateY(0);
+             }
+         }
+
+         @keyframes slideUp {
+             from {
+                 opacity: 0;
+                 transform: translateY(30px);
+             }
+             to {
+                 opacity: 1;
+                 transform: translateY(0);
+             }
+         }
+
+         @media (max-width: 768px) {
+             .header h1 {
+                 font-size: 1.8em;
+             }
+
+             .form-card {
+                 padding: 25px;
+             }
+
+             .form-grid {
+                 grid-template-columns: 1fr;
+             }
+
+             .btn-group {
+                 flex-direction: column;
+             }
+
+             .btn {
+                 width: 100%;
+             }
+         }
+     </style>
+ </head>
+ <body>
+     <div class="container">
+         <div class="header">
+             <h1>🏨 Hotel Booking System</h1>
+             <p>إدارة متكاملة لنظام حجز الفنادق</p>
+         </div>
+
+         <div class="tabs">
+             <button class="tab-btn active" onclick="showForm('guest')">👤 Guest</button>
+             <button class="tab-btn" onclick="showForm('room')">🛏️ Room</button>
+             <button class="tab-btn" onclick="showForm('booking')">📅 Booking</button>
+             <button class="tab-btn" onclick="showForm('payment')">💳 Payment</button>
+         </div>
+
+        
+         <div id="guest" class="form-container active">
+             <div class="form-card">
+                 <h2 class="form-title"><i class="fas fa-user-plus"></i> Guest Management</h2>
+                
+                  Add Guest 
+                 <form method="post" action="index.php" style="margin-bottom: 40px;">
+                     <h3 style="color: #667eea; margin-bottom: 20px;">➕ Add New Guest</h3>
+                     <input type="hidden" name="action" value="add_guest">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Full Name <span class="required">*</span></label>
+                             <input class="form-input" name="Full_Name" type="text" required placeholder="Ahmed Hassan">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Phone <span class="required">*</span></label>
+                             <input class="form-input" name="Guest_Phone" type="text" required placeholder="+20 100 000 0000">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Email</label>
+                             <input class="form-input" name="Guest_Email" type="email" placeholder="guest@example.com">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Nationality</label>
+                             <input class="form-input" name="Nationality" type="text" placeholder="Egyptian">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">ID Document <span class="required">*</span></label>
+                             <input class="form-input" name="ID_Document_Number" type="text" required placeholder="A123456789">
+                         </div>
+                         <div class="form-group full-width">
+                             <label class="form-label">Address</label>
+                             <input class="form-input" name="Address" type="text" placeholder="Cairo, Egypt">
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Add Guest</button>
+                         <button class="btn btn-secondary" type="reset"><i class="fas fa-eraser"></i> Clear</button>
+                     </div>
+                 </form>
+
+                 <hr style="border: none; border-top: 2px solid #f0f0f0; margin: 30px 0;">
+
+                  Search Guest 
+                 <form method="get" action="index.php" style="margin-bottom: 40px;">
+                     <h3 style="color: #667eea; margin-bottom: 20px;">🔍 Search Guest</h3>
+                     <input type="hidden" name="action" value="search_guest">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Guest Name</label>
+                             <input class="form-input" name="q_name" type="text" placeholder="Enter name">
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Search</button>
+                     </div>
+                 </form>
+
+                 <hr style="border: none; border-top: 2px solid #f0f0f0; margin: 30px 0;">
+
+                  Delete Guest 
+                 <form method="post" action="index.php" onsubmit="return confirm('Are you sure?');">
+                     <h3 style="color: #dc3545; margin-bottom: 20px;">🗑️ Delete Guest</h3>
+                     <input type="hidden" name="action" value="delete_guest">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Guest ID <span class="required">*</span></label>
+                             <input class="form-input" name="Guest_ID" type="number" min="1" required placeholder="5">
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i> Delete</button>
+                     </div>
+                     <div class="help"><strong>⚠️ Warning:</strong> This will delete guest and all bookings!</div>
+                 </form>
+             </div>
+         </div>
+
+          Room Section 
+         <div id="room" class="form-container">
+             <div class="form-card">
+                 <h2 class="form-title"><i class="fas fa-bed"></i> Room Management</h2>
+                
+                  Add Room 
+                 <form method="post" action="index.php" style="margin-bottom: 40px;">
+                     <h3 style="color: #667eea; margin-bottom: 20px;">➕ Add New Room</h3>
+                     <input type="hidden" name="action" value="add_room">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Room Number <span class="required">*</span></label>
+                             <input class="form-input" name="Room_Number" type="text" required placeholder="101">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Room Type</label>
+                             <input class="form-input" name="Room_Type" type="text" placeholder="Single/Double/Suite">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Bed Type</label>
+                             <input class="form-input" name="Bed_Type" type="text" placeholder="King/Queen">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Price Per Night <span class="required">*</span></label>
+                             <input class="form-input" name="Price_Per_Night" type="number" step="0.01" required placeholder="450.00">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Status</label>
+                             <select class="form-select" name="Room_Status">
+                                 <option value="Available">Available</option>
+                                 <option value="Booked">Booked</option>
+                                 <option value="Under Maintenance">Under Maintenance</option>
+                             </select>
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-primary" type="submit"><i class="fas fa-plus"></i> Add Room</button>
+                     </div>
+                 </form>
+
+                 <hr style="border: none; border-top: 2px solid #f0f0f0; margin: 30px 0;">
+
+                  Update Room 
+                 <form method="post" action="index.php" style="margin-bottom: 40px;">
+                     <h3 style="color: #667eea; margin-bottom: 20px;">✏️ Update Room</h3>
+                     <input type="hidden" name="action" value="update_room">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Room ID</label>
+                             <input class="form-input" name="Room_ID" type="number" placeholder="3">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Or Room Number</label>
+                             <input class="form-input" name="Room_Number" type="text" placeholder="101">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">New Type</label>
+                             <input class="form-input" name="Room_Type" type="text" placeholder="Suite">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">New Price</label>
+                             <input class="form-input" name="Price_Per_Night" type="number" step="0.01" placeholder="1500">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">New Bed Type</label>
+                             <input class="form-input" name="Bed_Type" type="text" placeholder="King Bed">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">New Status</label>
+                             <select class="form-select" name="Room_Status">
+                                 <option value="">Keep current</option>
+                                 <option value="Available">Available</option>
+                                 <option value="Booked">Booked</option>
+                                 <option value="Under Maintenance">Under Maintenance</option>
+                             </select>
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-primary" type="submit"><i class="fas fa-sync"></i> Update</button>
+                     </div>
+                 </form>
+
+                 <hr style="border: none; border-top: 2px solid #f0f0f0; margin: 30px 0;">
+
+                  Search Available Rooms 
+                 <form method="get" action="index.php">
+                     <h3 style="color: #667eea; margin-bottom: 20px;">🔍 Search Available Rooms</h3>
+                     <input type="hidden" name="action" value="search_available_rooms">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Min Price</label>
+                             <input class="form-input" name="min_price" type="number" step="0.01" placeholder="0">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Max Price</label>
+                             <input class="form-input" name="max_price" type="number" step="0.01" placeholder="10000">
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Find Rooms</button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+
+          Booking Section
+         <div id="booking" class="form-container">
+             <div class="form-card">
+                 <h2 class="form-title"><i class="fas fa-calendar-plus"></i> Booking Management</h2>
+                
+                  Make Booking 
+                 <form method="post" action="index.php" style="margin-bottom: 40px;">
+                     <h3 style="color: #667eea; margin-bottom: 20px;">➕ Create New Booking</h3>
+                     <input type="hidden" name="action" value="make_booking">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Guest ID <span class="required">*</span></label>
+                             <input class="form-input" name="Guest_ID" type="number" required placeholder="2">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Room ID <span class="required">*</span></label>
+                             <input class="form-input" name="Room_ID" type="number" required placeholder="3">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Check-In <span class="required">*</span></label>
+                             <input class="form-input" name="CheckIn_Date" type="date" required>
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Check-Out <span class="required">*</span></label>
+                             <input class="form-input" name="CheckOut_Date" type="date" required>
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Guests <span class="required">*</span></label>
+                             <input class="form-input" name="Number_of_Guests" type="number" min="1" value="1" required>
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Nights <span class="required">*</span></label>
+                             <input class="form-input" name="Number_of_Nights" type="number" min="1" value="1" required>
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Total Price <span class="required">*</span></label>
+                             <input class="form-input" name="Total_Price" type="number" step="0.01" required placeholder="900.00">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Payment Method <span class="required">*</span></label>
+                             <select class="form-select" name="Payment_Method" required>
+                                 <option value="Cash">💵 Cash</option>
+                                 <option value="Credit Card">💳 Credit Card</option>
+                                 <option value="Debit Card">💳 Debit Card</option>
+                                 <option value="PayPal">🅿️ PayPal</option>
+                             </select>
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Payment Status <span class="required">*</span></label>
+                             <select class="form-select" name="Payment_Status" required>
+                                 <option value="Pending">⏳ Pending</option>
+                                 <option value="Paid">✅ Paid</option>
+                             </select>
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-primary" type="submit"><i class="fas fa-check"></i> Create Booking</button>
+                         <button class="btn btn-secondary" type="reset"><i class="fas fa-eraser"></i> Clear</button>
+                     </div>
+                     <div class="help">💡 Make sure the room is available for selected dates</div>
+                 </form>
+
+                 <hr style="border: none; border-top: 2px solid #f0f0f0; margin: 30px 0;">
+
+                  Cancel Booking 
+                 <form method="post" action="index.php" onsubmit="return confirm('Confirm cancellation?');" style="margin-bottom: 40px;">
+                     <h3 style="color: #dc3545; margin-bottom: 20px;">❌ Cancel Booking</h3>
+                     <input type="hidden" name="action" value="cancel_booking">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Booking ID <span class="required">*</span></label>
+                             <input class="form-input" name="Booking_ID" type="number" min="1" required placeholder="7">
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-danger" type="submit"><i class="fas fa-times"></i> Cancel</button>
+                     </div>
+                 </form>
+
+                 <hr style="border: none; border-top: 2px solid #f0f0f0; margin: 30px 0;">
+
+                  Guest History 
+                 <form method="get" action="index.php">
+                     <h3 style="color: #667eea; margin-bottom: 20px;">📋 Booking History</h3>
+                     <input type="hidden" name="action" value="guest_booking_history">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Guest ID</label>
+                             <input class="form-input" name="Guest_ID" type="number" placeholder="1">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">Or Guest Email</label>
+                             <input class="form-input" name="Guest_Email" type="email" placeholder="guest@example.com">
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-primary" type="submit"><i class="fas fa-eye"></i> View History</button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+
+           
+         <div id="payment" class="form-container">
+             <div class="form-card">
+                 <h2 class="form-title"><i class="fas fa-credit-card"></i> Payment Management</h2>
+                
+                  
+                 <form method="get" action="index.php" style="margin-bottom: 40px;">
+                     <h3 style="color: #667eea; margin-bottom: 20px;">📋 View All Payments</h3>
+                     <input type="hidden" name="action" value="view_all_payments">
+                     <div class="btn-group">
+                         <button class="btn btn-primary" type="submit"><i class="fas fa-list"></i> Show All Payments</button>
+                     </div>
+                 </form>
+
+                 <hr style="border: none; border-top: 2px solid #f0f0f0; margin: 30px 0;">
+
+                  
+                 <form method="post" action="index.php">
+                     <h3 style="color: #667eea; margin-bottom: 20px;">✏️ Update Payment Status</h3>
+                     <input type="hidden" name="action" value="update_payment">
+                     <div class="form-grid">
+                         <div class="form-group">
+                             <label class="form-label">Payment ID <span class="required">*</span></label>
+                             <input class="form-input" name="Payment_ID" type="number" min="1" required placeholder="3">
+                         </div>
+                         <div class="form-group">
+                             <label class="form-label">New Status <span class="required">*</span></label>
+                             <select class="form-select" name="Payment_Status" required>
+                                 <option value="Pending">⏳ Pending</option>
+                                 <option value="Paid">✅ Paid</option>
+                                 <option value="Failed">❌ Failed</option>
+                                 <option value="Refunded">🔄 Refunded</option>
+                                 <option value="Cancelled">🚫 Cancelled</option>
+                             </select>
+                         </div>
+                     </div>
+                     <div class="btn-group">
+                         <button class="btn btn-primary" type="submit"><i class="fas fa-sync"></i> Update Status</button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+
+     <script>
+         function showForm(formId) {
+             const forms = document.querySelectorAll('.form-container');
+             forms.forEach(form => form.classList.remove('active'));
+
+             const tabs = document.querySelectorAll('.tab-btn');
+             tabs.forEach(tab => tab.classList.remove('active'));
+
+             document.getElementById(formId).classList.add('active');
+             event.target.classList.add('active');
+         }
+     </script>
+</body>
+ </html>
+
+
